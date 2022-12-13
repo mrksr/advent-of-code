@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "advent_of_code"}]
 
 [tool.poetry.dependencies]
-python = "~3.10.0"
+python = "~3.11.0"
 numpy = "^1.23.5"
 jupyterlab = "^3.5.1"
 ipython = "^8.7.0"

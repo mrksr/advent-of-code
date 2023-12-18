@@ -1,9 +1,8 @@
 [tool.poetry]
-name = "advent-of-code-2023"
+name = "aoc"
 version = "0.1.0"
 description = ""
 authors = ["Markus Kaiser <git@zfix.org>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11"
@@ -11,6 +10,8 @@ torch = "^2.1.2"
 pytest = "^7.4.3"
 ruff = "^0.1.8"
 plotly = "^5.18.0"
+numpy = "^1.26.2"
+pandas = "^2.1.4"
 
 [tool.poetry.group.dev.dependencies]
 jupyterlab = "^4.0.9"

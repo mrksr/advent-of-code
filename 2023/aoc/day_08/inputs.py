@@ -1,9 +1,6 @@
-import pytest
-
-
-@pytest.fixture
 def simple() -> tuple[int, str]:
     return (
+        2,
         2,
         r"""RL
 
@@ -18,9 +15,9 @@ def simple() -> tuple[int, str]:
     )
 
 
-@pytest.fixture
 def multi_step() -> tuple[int, str]:
     return (
+        6,
         6,
         r"""LLR
 
@@ -31,10 +28,28 @@ ZZZ = (ZZZ, ZZZ)
     )
 
 
-@pytest.fixture()
+def parallel() -> tuple[int, str]:
+    return (
+        2,
+        6,
+        r"""LR
+
+AAA = (11B, XXX)
+11B = (XXX, ZZZ)
+ZZZ = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)
+""",
+    )
+
+
 def full() -> tuple[int, str]:
     return (
         15517,
+        42,
         r"""LRRRLRLLLLLLLRLRLRRLRRRLRRLRRRLRRLRRRLLRRRLRRLRLRRRLRRLRRRLLRLLRRRLRRRLRLLRLRLRRRLRRLRRLRRLRLRRRLRRLRRRLLRLLRLLRRLRLLRLRRLRLRLRRLRRRLLLRRLRRRLLRRLRLRLRRRLRLRRRLLRLLLRRRLLLRRLLRLLRRLLRLRRRLRLRRLRRLLRRLRLLRLRRRLRRRLRLRRRLRLRLRRLRLRRRLRRRLRRRLRRLRRLRRRLLRLRLLRLLRRRR
 
 HVX = (SCS, XQN)

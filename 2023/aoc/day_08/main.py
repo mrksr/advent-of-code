@@ -49,11 +49,11 @@ def input_to_matrix_representation(input):
         state_transition_matrix[0, state_ix, left] = 1
         state_transition_matrix[1, state_ix, right] = 1
 
-    move_set = reduce(
+    single_loop = reduce(
         lambda a, b: a @ b, [state_transition_matrix[move] for move in move_indexer]
     )
 
-    return move_indexer, move_set, state_dict
+    return move_indexer, single_loop, state_dict
 
 
 def state_vector(state_name, state_dict):
@@ -65,24 +65,24 @@ def state_vector(state_name, state_dict):
 def first_task(input, device="cuda"):
     (
         move_indexer,
-        move_set,
+        single_loop,
         state_dict,
     ) = input_to_matrix_representation(input)
 
-    move_set = move_set.to(device)
+    single_loop = single_loop.to(device)
     end_state = state_vector("ZZZ", state_dict).to(device)
     current_state = state_vector("AAA", state_dict).to(device)
 
     for steps in it.count(0):
         if (current_state * end_state).sum() > 0:
             return steps * len(move_indexer)
-        current_state = current_state @ move_set
+        current_state = current_state @ single_loop
 
 
 def second_task(input, device="cuda"):
     (
         move_indexer,
-        move_set,
+        single_loop,
         state_dict,
     ) = input_to_matrix_representation(input)
 
@@ -93,7 +93,7 @@ def second_task(input, device="cuda"):
         [state_vector(state, state_dict) for state in state_dict if state.endswith("A")]
     )
 
-    move_set = move_set.to(device)
+    single_loop = single_loop.to(device)
     end_state_mask = end_state_mask.to(device)
     current_states = current_states.to(device)
 
@@ -110,7 +110,7 @@ def second_task(input, device="cuda"):
             if len(steps_until_end) == len(current_states):
                 break
 
-        current_states = current_states @ move_set
+        current_states = current_states @ single_loop
 
     num_loops = np.lcm.reduce(list(steps_until_end.values()))
     return num_loops * len(move_indexer)

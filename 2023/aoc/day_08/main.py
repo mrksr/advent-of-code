@@ -74,7 +74,7 @@ def first_task(input, device="cuda"):
     current_state = state_vector("AAA", state_dict).to(device)
 
     for steps in it.count(0):
-        if (current_state * end_state).sum() > 0:
+        if torch.dot(current_state[0], end_state[0]) > 0:
             return steps * len(move_indexer)
         current_state = current_state @ single_loop
 
@@ -107,7 +107,7 @@ def second_task(input, device="cuda"):
                 if state not in steps_until_end:
                     steps_until_end[state] = steps
 
-            if len(steps_until_end) == len(current_states):
+            if len(steps_until_end) >= len(current_states):
                 break
 
         current_states = current_states @ single_loop

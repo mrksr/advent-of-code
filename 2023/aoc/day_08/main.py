@@ -36,16 +36,16 @@ def input_to_matrix_representation(input):
     move_indexer = torch.from_numpy(moves)
 
     num_states = len(states)
-    state_dict = {name: ix for ix, name in enumerate(states)}
-    state_matrix = torch.stack(
+    state_to_index = {name: ix for ix, name in enumerate(states)}
+    state_to_next_states = torch.stack(
         [
-            torch.tensor([state_dict[target] for target in state], dtype=torch.long)
+            torch.tensor([state_to_index[target] for target in state], dtype=torch.long)
             for state in states.values()
         ],
         dim=0,
     )
     state_transition_matrix = torch.zeros([2, num_states, num_states])
-    for state_ix, (left, right) in enumerate(state_matrix):
+    for state_ix, (left, right) in enumerate(state_to_next_states):
         state_transition_matrix[0, state_ix, left] = 1
         state_transition_matrix[1, state_ix, right] = 1
 
@@ -53,12 +53,12 @@ def input_to_matrix_representation(input):
         lambda a, b: a @ b, [state_transition_matrix[move] for move in move_indexer]
     )
 
-    return move_indexer, single_loop, state_dict
+    return move_indexer, single_loop, state_to_index
 
 
-def state_vector(state_name, state_dict):
-    state = torch.zeros([1, len(state_dict)])
-    state[0, state_dict[state_name]] = 1
+def state_vector(state_name, state_to_index):
+    state = torch.zeros([1, len(state_to_index)])
+    state[0, state_to_index[state_name]] = 1
     return state
 
 
@@ -66,12 +66,12 @@ def first_task(input, device="cuda"):
     (
         move_indexer,
         single_loop,
-        state_dict,
+        state_to_index,
     ) = input_to_matrix_representation(input)
 
     single_loop = single_loop.to(device)
-    end_state = state_vector("ZZZ", state_dict).to(device)
-    current_state = state_vector("AAA", state_dict).to(device)
+    end_state = state_vector("ZZZ", state_to_index).to(device)
+    current_state = state_vector("AAA", state_to_index).to(device)
 
     for steps in it.count(0):
         if torch.dot(current_state[0], end_state[0]) > 0:
@@ -83,14 +83,14 @@ def second_task(input, device="cuda"):
     (
         move_indexer,
         single_loop,
-        state_dict,
+        state_to_index,
     ) = input_to_matrix_representation(input)
 
     end_state_mask = torch.stack(
-        [state_vector(state, state_dict) for state in state_dict if state.endswith("Z")]
+        [state_vector(state, state_to_index) for state in state_to_index if state.endswith("Z")]
     ).sum(dim=0)
     current_states = torch.stack(
-        [state_vector(state, state_dict) for state in state_dict if state.endswith("A")]
+        [state_vector(state, state_to_index) for state in state_to_index if state.endswith("A")]
     )
 
     single_loop = single_loop.to(device)

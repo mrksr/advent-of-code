@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "AoC 2024"
 requires-python = ">=3.12"
 dependencies = [
-    "aocd>=0.1",
+    "advent-of-code-data[nb]>=2.0.4",
+    "aocd[nb]>=0.1",
     "ipdb>=0.13.13",
     "jupyter>=1.1.1",
     "numpy>=2.1.3",
